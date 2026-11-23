@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081426">
+  <meta name="description" content="Ariel Connect: comunicación privada sin fronteras.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Ariel Connect</title>
+</head>
+<body>
+  <main class="shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">AC</div><div><b>ARIEL CONNECT</b><small>Comunicación privada</small></div></div>
+      <div class="profile" id="profile">
+        <div class="avatar">A</div><div><b id="profileName">Invitado</b><small id="profileCode">Todavía sin identidad</small></div>
+      </div>
+      <button class="primary full" id="newChat">＋ Nueva conversación</button>
+      <div class="section-label">MENSAJES</div>
+      <div class="empty-list" id="conversationList">Tus conversaciones aparecerán aquí.</div>
+      <div class="sidebar-bottom"><span class="online-dot"></span> Servicio de demostración</div>
+    </aside>
+
+    <section class="main">
+      <header class="topbar"><div><b id="viewTitle">Bienvenido a Ariel Connect</b><small id="viewSub">Tu espacio privado de comunicación</small></div><span class="lock">⌑ Cifrado previsto</span></header>
+      <div class="welcome" id="welcome">
+        <div class="hero-icon">AC</div>
+        <p class="eyebrow">CONECTADOS, SIN FRONTERAS</p>
+        <h1>Tu comunicación.<br><span>Tu identidad.</span></h1>
+        <p class="intro">Creá tu identidad con un nombre visible. No necesitás número telefónico.</p>
+        <form id="registerForm" class="register-card">
+          <label for="displayName">¿Cómo querés que te vean?</label>
+          <input id="displayName" maxlength="40" placeholder="Tu nombre o apodo" required>
+          <button class="primary full" type="submit">Crear mi identidad</button>
+          <small>La primera versión genera un código de demostración.</small>
+        </form>
+      </div>
+      <div class="chat-placeholder hidden" id="chatPlaceholder">
+        <div class="bubble-icon">✉</div><h2>Elegí una conversación</h2><p>Estamos preparando el espacio para tus mensajes.</p>
+      </div>
+      <footer>ARIEL CONNECT <span>·</span> Primera versión de desarrollo</footer>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
