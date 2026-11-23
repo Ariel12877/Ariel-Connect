@@ -1,89 +1,63 @@
-import "dotenv/config";
-import express from "express";
-import cors from "cors";
-import { createServer } from "node:http";
-import { Server } from "socket.io";
-import { randomBytes } from "node:crypto";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+const express = require("express");
+const http = require("http");
+const path = require("path");
+const crypto = require("crypto");
+const { Server } = require("socket.io");
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: { origin: process.env.PUBLIC_ORIGIN || "http://localhost:3000" }
-});
+const server = http.createServer(app);
+const io = new Server(server);
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json({ limit: "1mb" }));
-app.use(express.static(path.join(__dirname, "../public")));
-
-// DEMO ONLY: in-memory stores are lost when the server restarts.
-// Replace with PostgreSQL and add rate limits, abuse controls and audited auth.
+// DEMO: los usuarios se guardan en memoria y se pierden al reiniciar.
 const users = new Map();
-const groups = new Map();
 
-function newUserCode() {
-  return `AC-${randomBytes(5).toString("hex").toUpperCase()}`;
-}
+app.use(express.json({ limit: "32kb" }));
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, name: "Ariel Connect", stage: "starter-demo" });
+  res.json({ ok: true, app: "Ariel Connect", stage: "prototype" });
 });
 
 app.post("/api/register", (req, res) => {
   const displayName = String(req.body?.displayName || "").trim().slice(0, 40);
-  if (!displayName) return res.status(400).json({ error: "Ingresá un nombre visible." });
+  if (!displayName) {
+    return res.status(400).json({ error: "Ingresá un nombre." });
+  }
 
-  // The code is an identifier, NOT an authentication secret.
-  const code = newUserCode();
-  users.set(code, { code, displayName, createdAt: new Date().toISOString() });
-  res.status(201).json({ user: users.get(code) });
+  const code = "AC-" + crypto.randomBytes(4).toString("hex").toUpperCase();
+  const user = { code, displayName, createdAt: new Date().toISOString() };
+  users.set(code, user);
+  return res.status(201).json({ user });
 });
 
 app.get("/api/users/:code", (req, res) => {
-  const user = users.get(req.params.code.toUpperCase());
-  if (!user) return res.status(404).json({ error: "No se encontró ese código." });
-  res.json({ user });
-});
-
-app.post("/api/groups", (req, res) => {
-  const name = String(req.body?.name || "").trim().slice(0, 60);
-  const ownerCode = String(req.body?.ownerCode || "").toUpperCase();
-  if (!name || !users.has(ownerCode)) {
-    return res.status(400).json({ error: "Nombre de grupo o creador inválido." });
+  const user = users.get(String(req.params.code).toUpperCase());
+  if (!user) {
+    return res.status(404).json({ error: "Código no encontrado en esta demo." });
   }
-  const id = randomBytes(12).toString("hex");
-  const group = { id, name, members: [ownerCode], createdAt: new Date().toISOString() };
-  groups.set(id, group);
-  res.status(201).json({ group });
+  return res.json({ user: { code: user.code, displayName: user.displayName } });
 });
 
+// Transporte de demostración: NO cifra, autentica ni garantiza privacidad.
 io.on("connection", (socket) => {
-  socket.on("identity:join", (code) => {
-    const normalized = String(code || "").toUpperCase();
-    if (users.has(normalized)) socket.join(`user:${normalized}`);
+  socket.on("demo:join", (room) => {
+    if (typeof room === "string" && /^[A-Z0-9_-]{3,40}$/.test(room)) {
+      socket.join(room);
+    }
   });
 
-  // This relay accepts ciphertext-shaped payloads only by convention.
-  // E2EE encryption/decryption and authenticated device sessions are NOT
-  // implemented in this starter. Do not send private messages through it yet.
-  socket.on("message:send", (packet, ack) => {
-    if (!packet || typeof packet !== "object" ||
-        typeof packet.to !== "string" ||
-        typeof packet.ciphertext !== "string") {
-      return ack?.({ ok: false, error: "Paquete inválido." });
-    }
-    io.to(`user:${packet.to.toUpperCase()}`).emit("message:new", {
-      from: String(packet.from || "").slice(0, 32),
-      ciphertext: packet.ciphertext,
-      sentAt: new Date().toISOString()
-    });
-    ack?.({ ok: true, accepted: true });
+  socket.on("demo:packet", ({ room, payload } = {}) => {
+    if (
+      typeof room !== "string" ||
+      typeof payload !== "string" ||
+      payload.length > 12000
+    ) return;
+
+    socket.to(room).emit("demo:packet", payload);
   });
 });
 
-const port = Number(process.env.PORT || 3000);
-httpServer.listen(port, () => {
-  console.log(`Ariel Connect starter running at http://localhost:${port}`);
+server.listen(PORT, () => {
+  console.log(`Ariel Connect escuchando en el puerto ${PORT}`);
 });

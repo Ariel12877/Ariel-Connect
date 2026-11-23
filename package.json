@@ -2,16 +2,17 @@
   "name": "ariel-connect",
   "version": "0.1.0",
   "private": true,
-  "description": "Starter foundation for Ariel Connect",
-  "type": "module",
+  "description": "Prototipo inicial de Ariel Connect",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "socket.io": "^4.8.1"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

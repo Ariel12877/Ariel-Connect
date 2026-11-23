@@ -1,44 +1,37 @@
-# Ariel Connect — starter 0.1
+# Ariel Connect
 
-Primera base de desarrollo para la aplicación multiplataforma Ariel Connect.
-
-## Qué incluye
-- Interfaz adaptable a computadora y celular.
-- PWA instalable (requiere HTTPS en producción; localhost funciona para desarrollo).
-- Creación de una identidad demo con código AC-... sin número telefónico.
-- Servidor Node.js + Express + Socket.IO.
-- Endpoint de salud y creación de grupos de demostración.
-- Esqueleto de retransmisión de paquetes cifrados.
+Prototipo inicial 0.1.0 de Ariel Connect.
 
 ## Ejecutar localmente
+
 Requiere Node.js 20 o superior.
 
 ```bash
 npm install
-cp .env.example .env
-npm run dev
+npm start
 ```
 
-Abrir http://localhost:3000
+Abrir http://localhost:3000.
 
-## Estado y límites IMPORTANTES
-Esta entrega es un **prototipo de interfaz y servidor**, no un mensajero listo para uso real.
+## Incluido en esta etapa
 
-Todavía NO están implementados:
-- Cifrado de extremo a extremo ni gestión segura de claves.
-- Autenticación real de dispositivos, recuperación de cuenta o verificación de identidad.
-- Persistencia en PostgreSQL; los usuarios y grupos demo viven en memoria y se pierden al reiniciar.
-- Mensajería durable/offline, sincronización multi-dispositivo y notificaciones push.
-- Grupos funcionales completos, adjuntos, llamadas ni transporte local Wi-Fi/Bluetooth.
-- Controles de abuso, límites de frecuencia, auditoría y pruebas de seguridad.
+- Interfaz adaptable a celulares y computadoras.
+- Estructura PWA instalable (requiere HTTPS para instalación desde un servidor).
+- Servidor Express y Socket.IO.
+- Generación de códigos de usuario de demostración.
+- Endpoint de estado del servidor.
 
-**No usar para conversaciones privadas ni datos reales.** El código de usuario es un identificador, no una credencial. No desplegar públicamente hasta implementar autenticación, cifrado E2EE, almacenamiento persistente y controles de seguridad revisados.
+## Límites importantes
 
-## Próximas etapas técnicas
-1. Persistencia PostgreSQL y esquema de usuarios/dispositivos/grupos.
-2. Registro de dispositivos con claves públicas y autenticación por desafío.
-3. Integración de un protocolo E2EE mantenido y auditado; claves privadas locales, rotación y verificación de contactos.
-4. Mensajería durable con colas y entrega al reconectar.
-5. Grupos con distribución/rotación segura de claves.
-6. WebRTC para llamadas y pruebas de conectividad (STUN/TURN).
-7. Transporte local con módulo nativo; la PWA por sí sola tiene límites de descubrimiento Bluetooth/LAN.
+Esta versión NO es una aplicación de mensajería lista para uso real. Los usuarios se guardan en memoria y se pierden al reiniciar. El código generado no es autenticación segura. El canal Socket.IO de demostración no cifra ni autentica mensajes. No hay cifrado de extremo a extremo, almacenamiento persistente, entrega offline, gestión segura de claves, grupos privados reales, llamadas ni conexión local Bluetooth/LAN entre dispositivos.
+
+No enviar información personal ni confidencial. Antes de habilitar conversaciones reales habrá que diseñar autenticación, persistencia, protección contra abuso y cifrado E2EE con un protocolo reconocido y revisado. No implementar criptografía propia.
+
+## Próximas etapas
+
+1. Persistencia PostgreSQL y autenticación segura.
+2. Mensajería con cifrado de extremo a extremo y gestión de claves.
+3. Conversaciones y grupos privados.
+4. Entrega diferida y sincronización entre dispositivos.
+5. Llamadas WebRTC y evaluación de conectividad local.
+6. Pruebas de seguridad, accesibilidad y despliegue.
