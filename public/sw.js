@@ -1,4 +1,4 @@
-const CACHE = "ariel-connect-v0.1";
+const CACHE = "ariel-connect-v0.2";
 const ASSETS = ["/", "/index.html", "/styles.css", "/app.js", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {

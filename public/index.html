@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#101827">
-  <meta name="description" content="Ariel Connect: una base para comunicación multiplataforma.">
+  <meta name="description" content="Ariel Connect: comunicación desde cualquier dispositivo.">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="/styles.css">
   <title>Ariel Connect</title>
@@ -13,38 +13,59 @@
   <main class="shell">
     <header class="top">
       <div class="mark" aria-hidden="true">AC</div>
-      <div>
-        <p class="eyebrow">CONECTADOS</p>
-        <h1>Ariel Connect</h1>
-      </div>
-      <span class="status"><i></i> Prototipo</span>
+      <div><p class="eyebrow">CONECTADOS</p><h1>Ariel Connect</h1></div>
+      <span class="status"><i></i> Etapa 2</span>
     </header>
 
     <section class="hero">
       <p class="eyebrow">TU ESPACIO DE COMUNICACIÓN</p>
       <h2>Hablemos, estemos<br><span>cerca.</span></h2>
-      <p class="muted">Una base para conectar desde el celular o la computadora.</p>
+      <p class="muted">Tu cuenta te identifica con un código único. No necesitás número de teléfono.</p>
     </section>
 
-    <section class="panel">
-      <h3>Crear mi código</h3>
-      <p class="muted">Ingresá un nombre para generar un identificador de prueba.</p>
-      <form id="register-form">
-        <label for="display-name">Tu nombre</label>
-        <input id="display-name" maxlength="40" placeholder="Por ejemplo, Ariel" required>
-        <button type="submit">Generar código</button>
+    <section id="auth-view" class="panel">
+      <div class="tabs" role="tablist" aria-label="Acceso">
+        <button class="tab active" id="tab-register" type="button" role="tab" aria-selected="true">Crear cuenta</button>
+        <button class="tab" id="tab-login" type="button" role="tab" aria-selected="false">Ingresar</button>
+      </div>
+
+      <form id="register-form" class="auth-form">
+        <h3>Crear mi cuenta</h3>
+        <p class="muted">Elegí un nombre y una contraseña. Te daremos un código único.</p>
+        <label for="register-name">Nombre visible</label>
+        <input id="register-name" maxlength="40" minlength="2" autocomplete="name" placeholder="Por ejemplo, Ariel" required>
+        <label for="register-password">Contraseña (mínimo 12 caracteres)</label>
+        <input id="register-password" type="password" minlength="12" maxlength="200" autocomplete="new-password" required>
+        <button type="submit">Crear cuenta y generar código</button>
       </form>
-      <div id="result" class="result" aria-live="polite"></div>
+
+      <form id="login-form" class="auth-form hidden">
+        <h3>Bienvenido nuevamente</h3>
+        <p class="muted">Ingresá tu código Ariel Connect y tu contraseña.</p>
+        <label for="login-code">Código de usuario</label>
+        <input id="login-code" maxlength="13" autocomplete="username" placeholder="AC-XXXXXXXXXX" required>
+        <label for="login-password">Contraseña</label>
+        <input id="login-password" type="password" maxlength="200" autocomplete="current-password" required>
+        <button type="submit">Ingresar</button>
+      </form>
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+    </section>
+
+    <section id="account-view" class="panel hidden">
+      <p class="eyebrow">SESIÓN ACTIVA</p>
+      <h3>¡Hola, <span id="account-name"></span>!</h3>
+      <p class="muted">Tu código de Ariel Connect:</p>
+      <div class="code-box"><strong id="account-code"></strong><button id="copy-code" class="secondary" type="button">Copiar</button></div>
+      <p class="hint">Conservá tu código y contraseña. Todavía no hay recuperación de cuenta.</p>
+      <button id="logout-button" class="secondary" type="button">Cerrar sesión</button>
     </section>
 
     <section class="notice">
-      <strong>Etapa inicial</strong>
-      <p>Esta versión es una demostración. Todavía no ofrece mensajería privada real ni cifrado de extremo a extremo.</p>
+      <strong>Seguridad y estado</strong>
+      <p>Esta etapa incorpora cuentas persistentes y sesiones protegidas. Todavía no incluye chat privado ni cifrado de extremo a extremo. No compartas tu contraseña.</p>
     </section>
-
-    <footer>ARIEL CONNECT · 0.1.0</footer>
+    <footer>ARIEL CONNECT · 0.2.0</footer>
   </main>
-  <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
